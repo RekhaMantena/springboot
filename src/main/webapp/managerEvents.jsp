@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,130 +7,104 @@
     <title>Manager Events</title>
     <style>
         body {
-            margin: 0;
-            padding-top: 20px; /* Adjust padding based on navbar height */
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #1f1f1f; /* Dark background for contrast */
+            color: #f1f1f1; /* Light color for text */
         }
-
-        .content {
-            padding: 20px;
-        }
-
         h2 {
+            color: #9eb57d; /* Highlight color */
             text-align: center;
-            color: #4a5d38; /* Dark green for the heading */
-            margin-top: 20px;
-            margin-bottom: 20px;
         }
-
         .table-container {
-            width: 90%;
-            margin: 0 auto; /* Centers the table */
-            border-radius: 10px;
-            background-color: #9eb57d; /* Green background for table container */
+            background-color: #2e2e2e; /* Slightly lighter for content background */
             padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            max-width: 800px;
+            margin: 30px auto;
+            border: 1px solid #9eb57d; /* Highlight border */
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            background-color: #fff; /* White background for table */
-            color: #333; /* Dark text for readability */
-            border-radius: 10px;
         }
-
         th, td {
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #c3d1b0; /* Light green border */
+            padding: 10px;
+            text-align: left;
+            color: #f1f1f1; /* Text color for cells */
         }
-
         th {
-            background-color: #4a5d38; /* Dark green for table headers */
-            color: #fff; /* White text for headers */
+            background-color: #3a3a3a; /* Slightly darker header background */
+            color: #9eb57d; /* Highlight text for headers */
         }
-
-        tr:nth-child(even) {
-            background-color: #e5f2d9; /* Lighter green for alternating rows */
+        td {
+            background-color: #2e2e2e; /* Content cell background */
         }
-
-        tr:hover {
-            background-color: #d2e6c2; /* Slightly darker green on hover */
+        tr:nth-child(even) td {
+            background-color: #383838; /* Alternate row color */
         }
-
-        img {
-            border-radius: 5px;
-        }
-
-        button {
-            background-color: #4a5d38; /* Dark green for button */
-            color: white;
+        input[type="submit"] {
+            background-color: #9eb57d;
+            color: #1f1f1f; /* Dark text for contrast on buttons */
             border: none;
             padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s;
         }
-
-        button:hover {
-            background-color: #3c4c2d; /* Slightly darker green on hover */
+        input[type="submit"]:hover {
+            background-color: #8da66d; /* Slightly darker hover effect */
         }
-
         .no-events {
             text-align: center;
-            color: #4a5d38; /* Match green text color */
+            color: #9eb57d; /* Highlight for empty message */
         }
     </style>
 </head>
 <body>
     <%@ include file="managernavbar.jsp" %>
-    <div class="content">
-        <h2>Events Managed by You</h2>
-        <div class="table-container">
-            <c:if test="${not empty eventList}">
-                <table>
-                    <thead>
+    <h2>Events Managed by You</h2>
+    <div class="table-container">
+        <c:if test="${not empty eventList}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Event ID</th>
+                        <th>Event Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Image</th>
+                        <th>View Registered Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="event" items="${eventList}">
                         <tr>
-                            <th>Event ID</th>
-                            <th>Event Name</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                            <th>Location</th>
-                            <th>Image</th>
-                            <th>View Registered Students</th>
+                            <td>${event.id}</td>
+                            <td>${event.eventName}</td>
+                            <td>${event.description}</td>
+                            <td>${event.date}</td>
+                            <td>${event.location}</td>
+                            <td>
+                                <c:if test="${event.eventImg != null}">
+                                    <img src="displayEventImage?id=${event.id}" width="80" height="80" alt="Event Image">
+                                </c:if>
+                                <c:if test="${event.eventImg == null}">No Image</c:if>
+                            </td>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/viewRegisteredStudents/${event.id}" style="text-decoration: none;">
+                                    <button style="background-color: #9eb57d; color: #1f1f1f; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                                        View Students
+                                    </button>
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="event" items="${eventList}">
-                            <tr>
-                                <td>${event.id}</td>
-                                <td>${event.eventName}</td>
-                                <td>${event.description}</td>
-                                <td>${event.date}</td>
-                                <td>${event.location}</td>
-                                <td>
-                                    <c:if test="${event.eventImg != null}">
-                                        <img src="displayEventImage?id=${event.id}" width="80" height="80" alt="Event Image">
-                                    </c:if>
-                                    <c:if test="${event.eventImg == null}">No Image</c:if>
-                                </td>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/viewRegisteredStudents/${event.id}" style="text-decoration: none;">
-                                        <button>View Students</button>
-                                    </a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </c:if>
-            <c:if test="${empty eventList}">
-                <p class="no-events">No events managed by you.</p>
-            </c:if>
-        </div>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </c:if>
+        <c:if test="${empty eventList}">
+            <p class="no-events">No events managed by you.</p>
+        </c:if>
     </div>
 </body>
 </html>
